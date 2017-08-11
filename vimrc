@@ -7,6 +7,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rails'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'fatih/vim-go'
 Plug 'vim-ruby/vim-ruby'
 Plug 'scrooloose/nerdtree'
@@ -81,13 +82,13 @@ nmap <Leader>s :w<CR>
 nmap <Leader>q :qa!<CR>
 
 " vim-airline
-" Enable the list of buffers
-let g:airline#extensions#tabline#enabled = 1
+
+let g:airline_theme = 'base16_default' " Milder colorschemes (pending the creation of a 16-color colorscheme)
+let g:airline#extensions#tabline#enabled = 1 " Enable the list of buffers
+let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
+let g:airline#extensions#tabline#buffer_nr_show = 1 " Show buffer number in status bar
+" Toggle the buffer/tab line with 'leader-t' (think of 'Toggle Tabs')
 nnoremap <expr><silent> <Leader>t &showtabline ? ":set showtabline=0\<cr>" : ":set showtabline=2\<cr>"
-" Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
-" Show buffer number in status bar
-let g:airline#extensions#tabline#buffer_nr_show = 1
 
 " Ack
 if executable('ag')
@@ -119,7 +120,7 @@ let g:ctrlp_custom_ignore = {
 " use ctrlp in a single shortcut to navigate buffers
 noremap <Leader>b :CtrlPBuffer<CR>
 
-" use ag (https://robots.thoughtbot.com/faster-grepping-in-vim), 
+" use ag (https://robots.thoughtbot.com/faster-grepping-in-vim),
 " because faster and respects .gitignore
 if executable('ag')
   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
