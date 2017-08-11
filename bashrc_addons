@@ -1,5 +1,11 @@
 # vim: set ft=sh:
 
+# Golang
+
+export GOPATH="$HOME/go"
+export PATH="$PATH:$GOPATH/bin"
+export PATH="/usr/local/go/bin:$PATH"
+
 # Prevent CTRL-S from suspending the output stream
 stty stop '' -ixoff
 # Prevent CTRL-Q from waking up the output stream
