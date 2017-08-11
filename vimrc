@@ -85,6 +85,7 @@ nmap <Leader>q :qa!<CR>
 " vim-airline
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
+nnoremap <expr><silent> <Leader>t &showtabline ? ":set showtabline=0\<cr>" : ":set showtabline=2\<cr>"
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
 " Show buffer number in status bar
