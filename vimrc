@@ -8,7 +8,7 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-rails'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'fatih/vim-go'
+Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'vim-ruby/vim-ruby'
 Plug 'scrooloose/nerdtree'
 Plug 'ervandew/supertab'
@@ -150,7 +150,7 @@ function! <SID>StripTrailingWhitespaces()
   call cursor(l, c)
 endfun
 
-autocmd FileType Dockerfile,make,c,coffee,cpp,css,eruby,eelixir,elixir,html,java,javascript,json,markdown,php,puppet,python,ruby,scss,sh,sql,text,typescript,vim,yaml autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+autocmd FileType Dockerfile,make,c,coffee,cpp,css,eruby,eelixir,elixir,html,java,javascript,json,markdown,php,puppet,python,ruby,scss,sh,sql,text,tmux,typescript,vim,yaml autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " Allow enter to chose from the omnicompletion window, instead of <C-y>
 " http://vim.wikia.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
@@ -161,3 +161,33 @@ set pastetoggle=<F3>
 set wildignore+=*.swp,*/tmp/
 set noswapfile
 set noundofile
+
+" Fix arrow key combos inside tmux
+
+" this enables to use native and custom key combos inside tmux,
+" as well as in standalone vim;
+" relies on the term being correctly set inside tmux
+if &term =~ '^screen'
+  exec "set <xUp>=\e[1;*A"
+  exec "set <xDown>=\e[1;*B"
+  exec "set <xRight>=\e[1;*C"
+  exec "set <xLeft>=\e[1;*D"
+endif
+
+" Navigate within and across tmux
+
+function! TmuxWinCmd(direction)
+  let wnr = winnr()
+  " try to move...
+  silent! execute 'wincmd ' . a:direction
+  " ...and if does nothing it means that it was the last vim pane,
+  " so we forward the command back to tmux
+  if wnr == winnr()
+    call system('tmux select-pane -' . tr(a:direction, 'phjkl', 'lLDUR'))
+  end
+endfunction
+
+nmap <M-Down>   :call TmuxWinCmd('j')<CR>
+nmap <M-Up>     :call TmuxWinCmd('k')<CR>
+nmap <M-Left>   :call TmuxWinCmd('h')<CR>
+nmap <M-Right>  :call TmuxWinCmd('l')<CR>
