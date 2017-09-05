@@ -63,6 +63,10 @@ set shiftwidth=2
 set softtabstop=2
 set expandtab
 
+" position of the new split panes
+set splitbelow
+set splitright
+
 " Remember cursor position when re-opening a file
 autocmd BufReadPost *
   \ if line("'\"") > 1 && line("'\"") <= line("$") |
