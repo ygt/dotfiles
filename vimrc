@@ -83,6 +83,22 @@ nmap <Leader>s :w<CR>
 " Map leader-q to quit vim
 nmap <Leader>q :qa!<CR>
 
+" Move lines up and down with Ctrl-arrowup/down and Ctrl-j/k (in normal, visual and insert mode)
+" Note: only meant for small selections and small movements, will break moving
+" multiple lines down beyond the bottom.
+nnoremap <C-Down> :m .+1<CR>
+nnoremap <C-Up> :m .-2<CR>
+nnoremap <C-j> :m .+1<CR>
+nnoremap <C-k> :m .-2<CR>
+vnoremap <C-Down> :m '>+1<CR>gv
+vnoremap <C-Up> :m '<-2<CR>gv
+vnoremap <C-j> :m '>+1<CR>gv
+vnoremap <C-k> :m '<-2<CR>gv
+inoremap <C-Down> <ESC>:m .+1<CR>gi
+inoremap <C-Up> <ESC>:m .-2<CR>gi
+inoremap <C-j> <ESC>:m .+1<CR>gi
+inoremap <C-k> <ESC>:m .-2<CR>gi
+
 " vim-airline
 
 let g:airline_theme = 'base16_default' " Milder colorschemes (pending the creation of a 16-color colorscheme)
