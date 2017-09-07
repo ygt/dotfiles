@@ -16,6 +16,7 @@ Plug 'ervandew/supertab'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mileszs/ack.vim'
 Plug 'tmux-plugins/vim-tmux'
+Plug 'terryma/vim-multiple-cursors'
 
 call plug#end()
 
