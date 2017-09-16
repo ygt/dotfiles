@@ -17,6 +17,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mileszs/ack.vim'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'ekalinin/Dockerfile.vim'
 
 call plug#end()
 
