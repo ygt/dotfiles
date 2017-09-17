@@ -52,6 +52,11 @@ set showmatch
 filetype plugin indent on " Automatically detect file types.
 syntax on  " syntax highlighting
 set mouse=a " enable mouse mode
+if has("mouse_sgr")
+	set ttymouse=sgr
+else
+	set ttymouse=xterm2
+end
 
 set noerrorbells visualbell t_vb=    " Disable all bells
 set autoindent                       " remember indent after going to the next line
