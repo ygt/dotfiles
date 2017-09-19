@@ -90,6 +90,9 @@ nnoremap k gk
 nnoremap <Down> gj
 nnoremap <Up> gk
 
+" Support vim options in individual files with magic comments
+set modeline
+
 " Remember cursor position when re-opening a file
 autocmd BufReadPost *
   \ if line("'\"") > 1 && line("'\"") <= line("$") |

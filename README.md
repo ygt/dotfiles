@@ -1,12 +1,12 @@
 ## Installation
 
-Symlink the files and directories in their respective location.
+Only for Ubuntu / Debian.
 
-Append these lines to `~/.bashrc` (Ubuntu) or `~/.bash_profile` (Mac):
-
-    [[ -e "${HOME}/.bashrc_addons" ]] && source ~/.bashrc_addons
-    [[ -e "${HOME}/.bash_aliases_addons" ]] && source ~/.bash_aliases_addons
-
-## TODO
-
-* Use gnu-stow
+1. Install git if not already used to clone the repo.
+1. Golang: `./scripts/golang`. It will remove the current `go` runtime if
+   present.
+1. Google Cloud SDK: `./scripts/google-cloud-sdk`: if a local GCP SDK is
+   present for the current user in the standard location, it will update it and
+   install additional modules, otherwise it will install it.
+1. Install basic packages and symlink dotfiles: `./scripts/setup` (it will
+   backup existing dotfiles if any).
