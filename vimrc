@@ -22,6 +22,8 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'ekalinin/Dockerfile.vim'
 
+Plug 'majutsushi/tagbar'
+
 call plug#end()
 
 " Additional leader keys
