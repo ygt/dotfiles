@@ -221,6 +221,11 @@ if executable('ag')
         \' --ignore=tags'
 endif
 
+" Ignore space chars in file finder by designating spaces as an abbreviation
+" for empty string that's expanded in fuzzy search, filename, full path &
+" regexp modes (set in the mode attr).
+" https://github.com/kien/ctrlp.vim/blob/master/doc/ctrlp.txt
+" Fixes fuzzy searching files with space seperated terms
 let g:ctrlp_abbrev = {
   \ 'gmode': 'i',
   \ 'abbrevs': [
