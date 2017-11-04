@@ -3,7 +3,7 @@
 tmux new-session -d
 tmux send-keys -t 0 "cd ~/neptune; vim" enter
 tmux new-window
-tmux split-window -v -p 10
+tmux split-window -v -p 30
 tmux select-pane -t 0
 tmux split-window -h -p 50
 tmux send-keys -t 0 "cd ~/neptune/; docker-compose up" enter
