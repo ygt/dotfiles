@@ -30,6 +30,9 @@ Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 Plug 'vim-syntastic/syntastic'
 
+Plug 'altercation/vim-colors-solarized'
+
+" Experimental
 Plug 'majutsushi/tagbar'
 Plug 'dhruvasagar/vim-table-mode'
 
