@@ -29,6 +29,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 Plug 'vim-syntastic/syntastic'
+Plug 'posva/vim-vue'
 
 Plug 'altercation/vim-colors-solarized'
 
@@ -445,6 +446,8 @@ let g:airline#extensions#tabline#buffer_nr_show = 1 " Show buffer number in stat
 nnoremap <expr><silent> <Leader>t &showtabline ? ":set showtabline=0\<cr>" : ":set showtabline=2\<cr>"
 " Keep the tabline hidden by default
 au VimEnter * :set showtabline=0
+" Disable the branch display
+let g:airline#extensions#branch#enabled = 0
 
 " ---------------- "
 " --- agignore --- "
@@ -492,6 +495,7 @@ let NERDTreeMinimalUI=1
 let NERDTreeShowHidden=1 " show hidden files at startup
 let NERDTreeIgnore = ['\.pyc$', '\.class$'] " http://superuser.com/questions/184844/hide-certain-files-in-nerdtree
 let NERDTreeAutoDeleteBuffer=1 " automatically replace/close the corresponding buffer when a file is moved/deleted
+let NERDTreeCascadeSingleChildDir=0 " do not collapse on the same line directories that have only one child directory
 
 " ------------- "
 " --- CtrlP --- "
