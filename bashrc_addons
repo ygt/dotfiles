@@ -55,6 +55,21 @@ if [[ -f $HOME/google-cloud-sdk/completion.bash.inc ]]; then
  source $HOME/google-cloud-sdk/completion.bash.inc
 fi
 
+# ----------------
+# --- Minikube ---
+# ----------------
+
+export MINIKUBE_WANTKUBECTLDOWNLOADMSG=false
+export MINIKUBE_WANTUPDATENOTIFICATION=false
+export MINIKUBE_WANTREPORTERRORPROMPT=false
+export MINIKUBE_HOME=$HOME
+export CHANGE_MINIKUBE_NONE_USER=true
+
+mkdir -p $HOME/.kube
+touch $HOME/.kube/config
+
+export KUBECONFIG=$HOME/.kube/config
+
 # -------------
 # --- rbenv ---
 # -------------
