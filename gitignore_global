@@ -1,0 +1,17 @@
+# Global gitignore config
+
+# OSX hidden files
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+
+# Unix swap & temp files
+*.swp
+*~
+
+# Ruby specific
+.sass-cache
+.bundle
+gems.tags
+tags
+

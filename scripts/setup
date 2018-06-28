@@ -36,6 +36,7 @@ sudo npm install eslint --global
 
 # Dotfiles
 backup_and_symlink $ROOTDIR/gitconfig_addons $HOME/.gitconfig_addons
+backup_and_symlink $ROOTDIR/gitignore_global $HOME/.gitignore_global
 backup_and_symlink $ROOTDIR/bash_aliases_addons $HOME/.bash_aliases_addons
 backup_and_symlink $ROOTDIR/bashrc_addons $HOME/.bashrc_addons
 backup_and_symlink $ROOTDIR/tmux.conf $HOME/.tmux.conf
@@ -47,6 +48,7 @@ append_if_missing "$HOME/.bashrc" '[[ -e "${HOME}/.bash_aliases_addons" ]] && so
 
 # Git
 git config --global include.path .gitconfig_addons
+git config --global core.excludesfile '~/.gitignore_global'
 
 # Vim
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
