@@ -1,5 +1,11 @@
 # vim: set ft=sh:
 
+# -----------
+# --- GPG ---
+# -----------
+
+export GPG_TTY=$(tty)
+
 # --------------
 # --- Golang ---
 # --------------
@@ -17,14 +23,6 @@ stty stop '' -ixoff
 # Prevent CTRL-Q from waking up the output stream
 stty start '' -ixon
 
-# -----------
-# --- SSH ---
-# -----------
-
-if [[ -S "$SSH_AUTH_SOCK" && ! -h "$SSH_AUTH_SOCK" ]]; then
-  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock;
-fi
-
 # ------------
 # --- Tmux ---
 # ------------
@@ -39,20 +37,55 @@ if [[ -n "$TMUX" ]]; then
   export TERM=screen-256color
 else
   export TERM=xterm-256color
+
 fi
+
+update_auth_sock() {
+  local socket_path="$(tmux show-environment | sed -n 's/^SSH_AUTH_SOCK=//p')"
+
+  if [[ -n "$TMUX" ]]; then
+    echo "not in a tmux session" >&2
+    return 1
+  fi
+
+  if [[ -n "$socket_path" ]]; then
+    echo "no socket path" >&2
+    return 1
+  else
+    export SSH_AUTH_SOCK="$socket_path"
+  fi
+}
+
+update_auth_sock()
 
 # ------------------------
 # --- Google Cloud SDK ---
 # ------------------------
 
 # The next line updates PATH for the Google Cloud SDK.
+if [[ -f $HOME/.google-cloud-sdk/path.bash.inc ]]; then
+  source $HOME/.google-cloud-sdk/path.bash.inc
+fi
+
 if [[ -f $HOME/google-cloud-sdk/path.bash.inc ]]; then
- source $HOME/google-cloud-sdk/path.bash.inc
+  source $HOME/google-cloud-sdk/path.bash.inc
 fi
 
 # The next line enables bash completion for gcloud.
+if [[ -f $HOME/.google-cloud-sdk/completion.bash.inc ]]; then
+  source $HOME/.google-cloud-sdk/completion.bash.inc
+fi
+
 if [[ -f $HOME/google-cloud-sdk/completion.bash.inc ]]; then
- source $HOME/google-cloud-sdk/completion.bash.inc
+  source $HOME/google-cloud-sdk/completion.bash.inc
+fi
+
+# ----------------------------------- #
+# --- Kubernetes CLI autocomplete --- #
+# ----------------------------------- #
+
+if [[ -n "$(command -v kubectl)" ]]; then
+  source <(kubectl completion bash)
 fi
 
 # ----------------
@@ -198,3 +231,7 @@ my_custom_prompt () {
 }
 
 my_custom_prompt
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="/home/developer/.sdkman"
+[[ -s "/home/developer/.sdkman/bin/sdkman-init.sh" ]] && source "/home/developer/.sdkman/bin/sdkman-init.sh"

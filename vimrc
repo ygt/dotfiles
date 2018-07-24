@@ -31,11 +31,14 @@ Plug 'elzr/vim-json'
 Plug 'vim-syntastic/syntastic'
 Plug 'posva/vim-vue'
 Plug 'majutsushi/tagbar'
+Plug 'udalov/kotlin-vim'
+Plug 'godlygeek/tabular'
+Plug 'kchmck/vim-coffee-script'
 
 Plug 'altercation/vim-colors-solarized'
 
 " Experimental
-Plug 'dhruvasagar/vim-table-mode'
+" Plug 'dhruvasagar/vim-table-mode'
 
 call plug#end()
 
@@ -190,11 +193,13 @@ vnoremap <Leader>r <Esc>:%s/<c-r>=GetVimEscapedVisual()<cr>//c<Left><Left>
 " --- Mouse support --- "
 " --------------------- "
 
-set mouse=a " enable mouse mode
-if has("mouse_sgr")
-  set ttymouse=sgr
-else
-  set ttymouse=xterm2
+if !has('nvim')
+  set mouse=a " enable mouse mode
+  if has("mouse_sgr")
+    set ttymouse=sgr
+  else
+    set ttymouse=xterm2
+  end
 end
 
 " -------------------------- "
@@ -415,7 +420,9 @@ vnoremap <Leader>p pgvy`>
 " Delete without yanking, send the deleted content to the 'black hole' register.
 " https://stackoverflow.com/questions/7501092/can-i-map-alt-key-in-vim
 " http://vim.wikia.com/wiki/Get_Alt_key_to_work_in_terminal
-set <M-d>=d
+if !has('nvim')
+  set <M-d>=d
+end
 
 " ...then, the actual mapping:
 " current line in normal and insert mode
@@ -471,10 +478,15 @@ function! TmuxWinCmd(direction)
   end
 endfunction
 
-nmap <M-Down>   :call TmuxWinCmd('j')<CR>
 nmap <M-Up>     :call TmuxWinCmd('k')<CR>
+nmap <M-Down>   :call TmuxWinCmd('j')<CR>
 nmap <M-Left>   :call TmuxWinCmd('h')<CR>
 nmap <M-Right>  :call TmuxWinCmd('l')<CR>
+
+nmap <M-k> :call TmuxWinCmd('k')<CR>
+nmap <M-j> :call TmuxWinCmd('j')<CR>
+nmap <M-h> :call TmuxWinCmd('h')<CR>
+nmap <M-l> :call TmuxWinCmd('l')<CR>
 
 " ------------------- "
 " --- vim-airline --- "
@@ -484,12 +496,23 @@ let g:airline_theme = 'base16_default' " Milder colorschemes (pending the creati
 let g:airline#extensions#tabline#enabled = 1 " Enable the list of buffers
 let g:airline#extensions#tabline#fnamemod = ':t' " Show just the filename
 let g:airline#extensions#tabline#buffer_nr_show = 1 " Show buffer number in status bar
+
+" TODO: Hide the '[No Name]' buffer
+" let g:airline#extensions#tabline#excludes = [
+"   \]
+
 " Toggle the buffer/tab line with 'leader-t' (think of 'Toggle Tabs')
 nnoremap <expr><silent> <Leader>t &showtabline ? ":set showtabline=0\<cr>" : ":set showtabline=2\<cr>"
 " Keep the tabline hidden by default
 au VimEnter * :set showtabline=0
-" Disable the branch display
+
+" --- Streamline the status bar
+" Disable branch display
 let g:airline#extensions#branch#enabled = 0
+" TODO:
+" disable mode display
+" disable word count
+" show default line count + line number
 
 " ---------------- "
 " --- agignore --- "
