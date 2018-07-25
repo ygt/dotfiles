@@ -29,6 +29,16 @@ wget -N -P "${DOWNLOAD_DIR}" "${URL}"
 
 unzip "${DOWNLOAD_DIR}/${FILENAME}" -d "${HOME}"
 
+additional_components=(
+  alpha
+  app-engine-go
+  app-engine-python
+  beta
+  cloud-build-local
+  docker-credential-gcr
+  kubectl
+)
+
 # tab completion and path need not be installed because already included in the
 # bash addons
 "${HOME}"/google-cloud-sdk/install.sh \
@@ -36,4 +46,4 @@ unzip "${DOWNLOAD_DIR}/${FILENAME}" -d "${HOME}"
   --usage-reporting false \
   --command-completion false \
   --path-update false \
-  --additional-components kubectl app-engine-python beta alpha
+  --additional-components $additional_components
