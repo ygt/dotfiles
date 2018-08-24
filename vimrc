@@ -36,6 +36,7 @@ Plug 'godlygeek/tabular'
 Plug 'kchmck/vim-coffee-script'
 Plug 'udalov/kotlin-vim'
 Plug 'SirVer/ultisnips'
+Plug 'mzlogin/vim-markdown-toc'
 
 Plug 'altercation/vim-colors-solarized'
 
@@ -48,6 +49,8 @@ call plug#end()
 " --- General options --- "
 " ----------------------- "
 
+set wildmode=list:longest,full " open a list of all the matches (list) *and* cycle through them (full)
+set wildignorecase
 set wildignore+=*.swp,*/tmp/
 set noswapfile
 set noundofile
@@ -449,6 +452,29 @@ inoremap <F6> <Esc>:setlocal spell!<CR>
 autocmd FileType markdown setlocal spell
 autocmd FileType gitcommit setlocal spell
 
+" ---------------- "
+" --- Markdown --- "
+" ---------------- "
+
+" Highlight syntax by default when entering an md file
+autocmd BufNewFile,BufReadPost *.md set filetype=markdown
+" In modern Vim the markdown plugin is included by default in the Vim
+" distribution itself.
+let g:markdown_fenced_languages = [
+      \ 'go',
+      \ 'golang=go',
+      \ 'html',
+      \ 'javascript',
+      \ 'json',
+      \ 'kotlin',
+      \ 'python',
+      \ 'ruby',
+      \ 'bash=sh',
+      \ 'sh',
+\]
+let g:markdown_minlines = 100 " allow for more lines to be syntax highlighted
+let g:markdown_syntax_conceal = 0 " don't mess with how the actual content is displayed
+
 " ---------------------------------------- "
 " --- Fix arrow key combos inside tmux --- "
 " ---------------------------------------- "
@@ -521,19 +547,20 @@ let g:airline#extensions#branch#enabled = 0
 " ---------------- "
 
 let s:agignore =
+      \' --ignore-dir=.bin'.
+      \' --ignore-dir=.bundle'.
+      \' --ignore-dir=bundle'.
       \' --ignore-dir=.git'.
       \' --ignore-dir=.hg'.
       \' --ignore-dir=.svn'.
-      \' --ignore-dir=.bundle'.
-      \' --ignore-dir=.bin'.
-      \' --ignore-dir=vendor'.
       \' --ignore-dir=log'.
       \' --ignore-dir=node_modules'.
-      \' --ignore=*.exe'.
-      \' --ignore=*.so'.
+      \' --ignore-dir=vendor'.
       \' --ignore=*.class'.
       \' --ignore=*.dll'.
+      \' --ignore=*.exe'.
       \' --ignore=*.pyc'.
+      \' --ignore=*.so'.
       \' --ignore=tags'
 
 " ----------- "
@@ -597,7 +624,7 @@ let g:ctrlp_custom_ignore = {
 " overrides that. We need therefore to explicitly specify the paths to be
 " ignored.
 if executable('ag')
-  let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden --skip-vcs-ignores -g ""' . s:agignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden --skip-vcs-ignores -g "" ' . s:agignore
 endif
 
 " Ignore space chars in file finder by designating spaces as an abbreviation
