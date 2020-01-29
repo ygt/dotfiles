@@ -29,7 +29,7 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 " TODO: re-instate and disable on save by default
-" Plug 'vim-syntastic/syntastic'
+Plug 'vim-syntastic/syntastic'
 Plug 'posva/vim-vue'
 Plug 'majutsushi/tagbar'
 Plug 'udalov/kotlin-vim'
@@ -742,9 +742,12 @@ let g:go_highlight_string_spellcheck = 1
 
 " When on with the cursor, show information about the identifier (funcions, vars..)...
 let g:go_auto_type_info = 1
+
+autocmd FileType go nmap <leader>z  <Plug>(go-build)
+
 " ...after only 100 ms instead of the default 800
 set updatetime=100
-
+autocmd FileType go nmap <leader>w  <Plug>(go-build)
 " ----------------- "
 " --- vim-RSpec --- "
 " ----------------- "
@@ -796,6 +799,10 @@ highlight def link rubyRspec Function
 " ----------------- "
 
 let g:syntastic_javascript_checkers=['eslint']
+let g:syntastic_go_checkers=['go', 'golint', 'govet']
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
 
 " ---------------- "
 " --- vim-json --- "
