@@ -35,7 +35,7 @@ Plug 'udalov/kotlin-vim'
 Plug 'godlygeek/tabular'
 Plug 'kchmck/vim-coffee-script'
 Plug 'udalov/kotlin-vim'
-Plug 'SirVer/ultisnips'
+" Plug 'SirVer/ultisnips'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'tpope/vim-abolish'
 Plug 'rodjek/vim-puppet'
@@ -45,6 +45,7 @@ Plug 'gerw/vim-HiLinkTrace'
 Plug 'keith/swift.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " TypeScript
 " ...syntax
@@ -53,6 +54,7 @@ Plug 'HerringtonDarkholme/yats.vim'
 Plug 'Quramy/tsuquyomi'
 
 Plug 'altercation/vim-colors-solarized'
+Plug 'joshdick/onedark.vim'
 
 " Experimental
 " Plug 'dhruvasagar/vim-table-mode'
@@ -64,7 +66,7 @@ call plug#end()
 " Try to use 'peachpuff' if available, because it's adapts to dark and light
 " background terminals, at the same time, which is useful for pairing.
 try
-  colorscheme peachpuff
+  colorscheme onedark
   catch
 		echom "'peachpuff' colorscheme not available, defaulting to 'default'"
   try
@@ -749,19 +751,12 @@ let g:go_highlight_build_constraints = 1
 let g:go_highlight_variable_assignments = 1
 let g:go_highlight_variable_declarations = 1
 
-" let g:go_highlight_extra_types = 1
-" let g:go_highlight_fields = 1
-" let g:go_highlight_types = 1
-" let g:go_highlight_functions = 1
-" let g:go_highlight_operators = 1
-" let g:go_highlight_format_strings = 1
+let g:go_highlight_diagnostic_errors = 1
+let g:go_highlight_diagnostic_warnings = 1
 
-" let g:go_highlight_debug = 1
+let g:go_highlight_debug = 1
 
 " let g:go_highlight_space_tab_error = 1
-" let g:go_highlight_diagnostic_errors = 1
-" let g:go_highlight_string_spellcheck = 1
-" let g:go_highlight_diagnostic_warnings = 1
 " let g:go_highlight_chan_whitespace_error = 1
 " let g:go_highlight_array_whitespace_error = 1
 " let g:go_highlight_trailing_whitespace_error = 1
