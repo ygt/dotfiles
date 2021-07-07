@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 
-# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/ as of 2018-03-05.
+# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+# https://docs.docker.com/engine/installation/linux/docker-ce/debian/
+# https://blog.docker.com/2019/03/happy-pi-day-docker-raspberry-pi/
 
 set -e
-CURRDIR=$(cd "$(dirname $BASH_SOURCE)" && pwd -P)
+
+# Docker GPG fingerprint.
+FINGERPRINT="9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88"
+
+# --------------------
+# --- Distribution ---
+# --------------------
+
+DIST=$(lsb_release -is | awk '{print tolower($0)}')
+if [[ "${DIST}" =~ "ubuntu|debian" ]]; then
+  echo "Distribution ${DIST} not supported, aborting"
+  exit 1
+fi
 
 # ------------------------
 # --- CPU architecture ---
@@ -14,87 +28,111 @@ if [[ "${ARCH}" == "i386" ]]; then
   echo "32 bit not supported, aborting"
   exit 1
 fi
+
 # Let's assume it's an ARM processor if it's not 32 or 64 bit.
 # Always use armhf, should work on armv6, armel...
 if [[ "${ARCH}" != "amd64" ]]; then
   ARCH="armhf"
 fi
 
-# -------------------------------
-# --- Clean up older versions ---
-# -------------------------------
+cleanup() {
+  sudo apt-get remove docker docker-engine docker.io containerd runc
+}
 
-sudo apt-get remove docker docker-engine docker.io
+install_aufs_kernel_module() {
+  sudo apt-get update -qq
 
-# ----------------------------
-# --- Install dependencies ---
-# ----------------------------
+  ubuntu_version=$(lsb_release -rs) # Ubuntu version number in short format, e.g. "18.04"
 
-UBUNTU_VERSION=$(lsb_release -rs) # Ubuntu version number in short format, e.g. "18.04"
+  # AUFS is a union filesystem. The aufs storage driver was previously the
+  # default storage driver used for managing images and layers on Docker for
+  # Ubuntu, and for Debian versions prior to Stretch. If your Linux kernel is
+  # version 4.0 or higher, and you use Docker CE, consider using the newer
+  # overlay2, which has potential performance advantages over the aufs storage
+  # driver.
+  if [[ "${ubuntu_version}" != $(echo -e "${ubuntu_version}\n16.04" | sort -rV | head -n1) ]]; then
+    echo "This Ubuntu version (${ubuntu_version}) requires aufs drivers: installing extra kernel modules."
 
-sudo apt-get update -q
+    sudo apt-get install -y \
+      linux-image-extra-$(uname -r) \
+      linux-image-extra-virtual
 
-# If Ubuntu < 16.04...
-if [[ "${UBUNTU_VERSION}" != $(echo -e "${UBUNTU_VERSION}\n16.04" | sort -rV | head -n1) ]]; then
-  echo "This Ubuntu version (${UBUNTU_VERSION}) requires aufs drivers: installing extra kernel modules."
+    if [[ -z $(grep aufs /proc/filesystems) ]]; then
+      echo "AUFS not properly installed, aborting."
+      exit 1
+    fi
+  fi
+}
 
-  sudo apt-get install -y \
-    linux-image-extra-$(uname -r) \
-    linux-image-extra-virtual
-fi
+install_dependencies() {
+  if [[ "${DIST}" == "ubuntu" ]]; then
+    install_aufs_kernel_module
+  fi
 
-sudo apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    software-properties-common
+  sudo apt-get install -yqq \
+      apt-transport-https \
+      ca-certificates \
+      curl \
+      gnupg-agent \
+      software-properties-common
+}
 
-# -------------------
-# --- Add apt key ---
-# -------------------
+add_apt_key() {
+  curl -fsSL https://download.docker.com/linux/${DIST}/gpg | sudo apt-key add -
 
-FINGERPRINT="9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88"
+  if [[ -z $(sudo apt-key fingerprint 0EBFCD88 | grep "${FINGERPRINT}") ]]; then
+    echo "apt repository key not installed correctly, aborting"
+    exit 1
+  fi
 
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  sudo add-apt-repository \
+     "deb [arch=${ARCH}] https://download.docker.com/linux/${DIST} \
+     $(lsb_release -cs) \
+     stable"
+}
 
-if [[ -z $(sudo apt-key fingerprint 0EBFCD88 | grep "${FINGERPRINT}") ]]; then
-  echo "apt repository key not installed correctly, aborting"
-  exit 1
-fi
+install_docker_ce_raspbian() {
+  curl -fsSL get.docker.com | bash
+  sudo apt-get update -qq
+  sudo apt-get update
+  systemctl start docker.service
+}
 
-sudo add-apt-repository \
-   "deb [arch=${ARCH}] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
+install_docker_ce() {
+  sudo apt-get update
+  sudo apt-get install -yqq docker-ce docker-ce-cli containerd.io
+}
 
-# print the output since we have a new repo
-sudo apt-get update
+install() {
+  clean_up
+  install_dependencies
+  add_apt_key
 
-sudo apt-get install -y docker-ce
+  if [[ "${DIST}" == "raspbian" ]]; then
+    install_docker_ce_raspbian
+  else
+    install_docker_ce
+  fi
+}
 
-# -----------------------
-# --- Non-root access ---
-# -----------------------
+# ------------
+# --- Test ---
+# ------------
 
-sudo groupadd -f docker
-sudo usermod -aG docker $USER
+install
+sudo docker info
 
-# ----------------------
-# --- docker-compose ---
-# ----------------------
-
-"${CURRDIR}/docker-compose"
-
-# ----------------
-# --- Test out ---
-# ----------------
-
-sudo service docker restart
-
-cat <<-EOF
-
-Please log out and log in again, and try to run, as your normal user:
-
-  docker run hello-world
-
-EOF
+echo "If you would like to use Docker as a non-root user, you should now"
+echo "consider adding your user to the \"docker\" group with something like:"
+echo
+echo "  sudo groupadd -f docker"
+echo "  sudo usermod -aG docker $USER"
+echo
+echo "Remember that you will have to log out and back in for this to take "
+echo "effect!"
+echo
+echo "WARNING: Adding a user to the \"docker\" group will grant the ability to"
+echo "         run containers which can be used to obtain root privileges on"
+echo "         the docker host."
+echo "         Refer to https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface"
+echo "         for more information."
